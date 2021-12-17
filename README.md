@@ -3,9 +3,9 @@ This is a WEB API that works as a microservice within the Toposoid project.
 Toposoid is a knowledge base construction platform.(see [Toposoid Root Project](https://github.com/toposoid/toposoid.git))
 This Microservice analyzes dependency's structure of English sentences and outputs the result in JSON.
 
-[![Test And Build](https://github.com/toposoid/toposoid-sentence-parser-english-web/actions/workflows/action.yml/badge.svg)](https://github.com/toposoid/toposoid-sentence-parser-english-web/actions/workflows/action.yml)
+[![Test And Build](https://github.com/toposoid/scala-common-nlp-english-web/actions/workflows/action.yml/badge.svg)](https://github.com/toposoid/scala-common-nlp-english-web/actions/workflows/action.yml)
 
-<img width="1108" src="https://user-images.githubusercontent.com/82787843/146093064-d0feff7b-51a6-49ab-a1d5-7d9f5a22935c.png">
+<img width="1105" src="https://user-images.githubusercontent.com/82787843/146533705-b1a09ad0-5faa-42db-8e02-fd3babf1c9e6.png">
 
 ## Requirements
 * Docker version 20.10.x, or later
@@ -24,9 +24,9 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 ## Usage
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
-    "word": ""
+    "word": "execute"
 }
-' http://localhost:9008/analyzeOneSentence
+' http://localhost:9008/getSynonyms
 ```
 
 # Note
