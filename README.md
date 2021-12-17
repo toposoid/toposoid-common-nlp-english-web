@@ -1,7 +1,7 @@
 # scala-common-nlp-english-web
 This is a WEB API that works as a microservice within the Toposoid project.
 Toposoid is a knowledge base construction platform.(see [Toposoid Root Project](https://github.com/toposoid/toposoid.git))
-This Microservice analyzes dependency's structure of English sentences and outputs the result in JSON.
+This Microservice provides an NLP function that handles English and outputs the result in JSON.
 
 [![Test And Build](https://github.com/toposoid/scala-common-nlp-english-web/actions/workflows/action.yml/badge.svg)](https://github.com/toposoid/scala-common-nlp-english-web/actions/workflows/action.yml)
 
@@ -30,8 +30,8 @@ curl -X POST -H "Content-Type: application/json" -d '{
 ```
 
 # Note
-* This microservice uses 9007 as the default port.
-* The meaning of premise is a premise as a proposition, and it corresponds to A of A → B in a logical formula. Therefore, it is set when there is a condition for the claim. Unless there are special conditions, it is not necessary to set the premise.
+* This microservice uses 9008 as the default port.
+* Currently, only the function to get synonyms is open to the public in this API.
 
 ## License
 toposoid/scala-common-nlp-english-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
