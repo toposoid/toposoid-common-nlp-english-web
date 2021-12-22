@@ -15,7 +15,7 @@
  '''
 
 from fastapi import FastAPI
-from model import NormalizedWord
+from model import NormalizedWord, SynonymList
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -60,7 +60,7 @@ def getSynonyms(normalizedWord:NormalizedWord):
             for synonym in verbSynonyms:
                 if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                     synonyms.append(synonym)    
-        return JSONResponse(content=jsonable_encoder(synonyms))
+        return JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
     except Exception as e:
         LOG.error(traceback.format_exc())
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
