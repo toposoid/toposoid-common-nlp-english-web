@@ -19,3 +19,6 @@ from typing import Dict, List
 
 class NormalizedWord(BaseModel):
     word:str
+
+class SynonymList(BaseModel):
+    synonyms:List[str]
