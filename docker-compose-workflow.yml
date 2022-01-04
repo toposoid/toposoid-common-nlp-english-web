@@ -8,12 +8,13 @@ networks:
         - subnet: 172.30.0.0/24
 
 services:
-  scala-common-nlp-english-web:
-    image: scala-common-nlp-english-web:0.1-SNAPSHOT
+  toposoid-common-nlp-english-web:
+    image: toposoid-common-nlp-english-web:0.1-SNAPSHOT
     tty: true
     environment:
-      - SYNONYM_NOUN_SIMILARITY_THRESHHOLD=0.52
-      - SYNONYM_VERB_SIMILARITY_THRESHHOLD=0.52
+      - SYNONYM_NOUN_SIMILARITY_THRESHHOLD_EN=0.52
+      - SYNONYM_VERB_SIMILARITY_THRESHHOLD_EN=0.52
+      - WORD2VEC_SIMILARITY_THRESHHOLD_EN=0.78
     networks:
       app_net:
         ipv4_address: 172.30.0.2

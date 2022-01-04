@@ -52,12 +52,14 @@ def getSynonyms(normalizedWord:NormalizedWord):
         synonyms = []
         thresholdNoun = float(os.environ["SYNONYM_NOUN_SIMILARITY_THRESHHOLD"])
         thresholdVerb = float(os.environ["SYNONYM_VERB_SIMILARITY_THRESHHOLD"])
-        if not normalizedWord.word.strip == "":
+        if not normalizedWord.word.strip() == "":
             nounSynonums, verbSynonyms = wordNetUtils.getSynonyms(normalizedWord.word)
             for synonym in nounSynonums:
+                if synonym in synonyms: continue
                 if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdNoun:
                     synonyms.append(synonym) 
             for synonym in verbSynonyms:
+                if synonym in synonyms: continue
                 if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                     synonyms.append(synonym)    
         return JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
