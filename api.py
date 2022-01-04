@@ -50,8 +50,8 @@ app.add_middleware(
 def getSynonyms(normalizedWord:NormalizedWord):
     try:
         synonyms = []
-        thresholdNoun = float(os.environ["SYNONYM_NOUN_SIMILARITY_THRESHHOLD"])
-        thresholdVerb = float(os.environ["SYNONYM_VERB_SIMILARITY_THRESHHOLD"])
+        thresholdNoun = float(os.environ["SYNONYM_NOUN_SIMILARITY_THRESHHOLD_EN"])
+        thresholdVerb = float(os.environ["SYNONYM_VERB_SIMILARITY_THRESHHOLD_EN"])
         if not normalizedWord.word.strip() == "":
             nounSynonums, verbSynonyms = wordNetUtils.getSynonyms(normalizedWord.word)
             for synonym in nounSynonums:
