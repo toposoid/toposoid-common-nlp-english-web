@@ -34,7 +34,7 @@ def test_SimpleVerb():
                         json={"word": "execute"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
-    assert synonymList.synonyms.sort() == ['accomplish', 'perform', 'execute'].sort()
+    assert synonymList.synonyms.sort() == ['accomplish', 'perform'].sort()
 
 def test_SimpleNoun():    
     response = client.post("/getSynonyms",
@@ -42,4 +42,12 @@ def test_SimpleNoun():
                         json={"word": "agreement"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
-    assert synonymList.synonyms.sort() == ['accord', 'arrangement', 'agreement'].sort()
+    assert synonymList.synonyms.sort() == ['accord', 'arrangement'].sort()
+
+def test_VocabularyNotFoundInWordNet():    
+    response = client.post("/getSynonyms",
+                        headers={"Content-Type": "application/json"},
+                        json={"word": "research"})    
+    assert response.status_code == 200
+    synonymList = SynonymList.parse_obj(response.json())
+    assert synonymList.synonyms.sort() == ['RESEARCH', 'Studies', 'STUDIES', 'Research', 'studies'].sort()
