@@ -51,3 +51,11 @@ def test_VocabularyNotFoundInWordNet():
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
     assert synonymList.synonyms.sort() == ['RESEARCH', 'Studies', 'STUDIES', 'Research', 'studies'].sort()
+
+def test_VocabularyNotFoundInWord2Vec():    
+    response = client.post("/getSynonyms",
+                        headers={"Content-Type": "application/json"},
+                        json={"word": "aslkfjg"})    
+    assert response.status_code == 200
+    synonymList = SynonymList.parse_obj(response.json())
+    assert synonymList.synonyms == []
