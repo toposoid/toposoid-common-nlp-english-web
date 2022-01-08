@@ -14,6 +14,8 @@
   limitations under the License.
  '''
 import spacy
+import os
+import numpy as np
 
 #This module provides utilities for the English version of WordNet
 
@@ -25,3 +27,23 @@ class Word2VecUtils():
     #This function calculates the similarity between two words given by a parameter in Word2Vec
     def calcSimilarityByWord2Vec(self, word, synonym):
         return self.nlp(word).similarity(self.nlp(synonym))
+    
+    #This function gets synonyms with high similarity from Word2Vec.
+    def getSimilarWords(self, word):
+        thresholdW2V = float(os.environ["WORD2VEC_SIMILARITY_THRESHHOLD_EN"])        
+        similarWords = set()
+        words, scores = self.mostSimilar(word)
+        for (w, s) in zip(words, scores):
+            if s > thresholdW2V and not w == word:
+                similarWords.add(w)
+        return similarWords
+
+    #This function gets synonyms with high similarity from Word2Vec.
+    def mostSimilar(self, word, topn=10):
+        ms = self.nlp.vocab.vectors.most_similar(
+        self.nlp(word).vector.reshape(1,self.nlp(word).vector.shape[0]), n=topn)
+        words = [self.nlp.vocab.strings[w] for w in ms[0][0]]        
+        if len(words) == 0: return [], []
+        distances = list(ms[2][0])
+        return words, distances
+

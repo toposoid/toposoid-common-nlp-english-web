@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 env:
   PJ_ACTOR: toposoid
-  PJ_REPO: scala-common-nlp-english-web
+  PJ_REPO: toposoid-common-nlp-english-web
   PJ_BRANCH: feature
-  PJ_VERSION: 0.1-SNAPSHOT
+  PJ_VERSION: 0.2
 jobs:
-  unit-test_scala-common-nlp-english-web:
+  unit-test_toposoid-common-nlp-english-web:
     runs-on: ubuntu-20.04
     steps:
       - name: Clone ${{ env.PJ_REPO }}

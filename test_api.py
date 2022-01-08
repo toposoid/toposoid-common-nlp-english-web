@@ -15,7 +15,7 @@
  '''
 from fastapi.testclient import TestClient
 from api import app
-from model import NormalizedWord
+from model import NormalizedWord, SynonymList
 import pytest
 
 #This is a unit test module
@@ -25,18 +25,37 @@ def test_EmptyWord():
                         headers={"Content-Type": "application/json"},
                         json={"word": ""})    
     assert response.status_code == 200
-    assert response.json() == []
+    synonymList = SynonymList.parse_obj(response.json())
+    assert synonymList.synonyms == []
 
 def test_SimpleVerb():    
     response = client.post("/getSynonyms",
                         headers={"Content-Type": "application/json"},
                         json={"word": "execute"})    
     assert response.status_code == 200
-    assert response.json().sort() == ['accomplish', 'perform', 'execute'].sort()
+    synonymList = SynonymList.parse_obj(response.json())
+    assert synonymList.synonyms.sort() == ['accomplish', 'perform'].sort()
 
 def test_SimpleNoun():    
     response = client.post("/getSynonyms",
                         headers={"Content-Type": "application/json"},
                         json={"word": "agreement"})    
     assert response.status_code == 200
-    assert response.json().sort() == ['accord', 'arrangement', 'agreement'].sort()
+    synonymList = SynonymList.parse_obj(response.json())
+    assert synonymList.synonyms.sort() == ['accord', 'arrangement'].sort()
+
+def test_VocabularyNotFoundInWordNet():    
+    response = client.post("/getSynonyms",
+                        headers={"Content-Type": "application/json"},
+                        json={"word": "research"})    
+    assert response.status_code == 200
+    synonymList = SynonymList.parse_obj(response.json())
+    assert synonymList.synonyms.sort() == ['RESEARCH', 'Studies', 'STUDIES', 'Research', 'studies'].sort()
+
+def test_VocabularyNotFoundInWord2Vec():    
+    response = client.post("/getSynonyms",
+                        headers={"Content-Type": "application/json"},
+                        json={"word": "aslkfjg"})    
+    assert response.status_code == 200
+    synonymList = SynonymList.parse_obj(response.json())
+    assert synonymList.synonyms == []
