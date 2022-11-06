@@ -23,15 +23,22 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 
 ## Usage
 ```bash
+#getSynonyms
 curl -X POST -H "Content-Type: application/json" -d '{
     "word": "execute"
 }
 ' http://localhost:9008/getSynonyms
+#getFeatureVector
+curl -X POST -H "Content-Type: application/json" -d '{
+    "sentence": "This is a test."
+}
+' http://localhost:9008/getFeatureVector
 ```
 
 # Note
 * This microservice uses 9008 as the default port.
 * Currently, only the function to get synonyms is open to the public in this API.
+* The vector dimension of getFeatureVector's response defaults to 768.
 
 ## License
 toposoid/scala-common-nlp-english-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
