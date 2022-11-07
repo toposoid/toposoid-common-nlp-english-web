@@ -21,7 +21,6 @@ from sentence_transformers import SentenceTransformer
 class SentenceBertUtils():
     model = None
     def __init__(self) :
-        #self.model = SentenceTransformer(os.environ["TOPOSOID_SENTENCEBERT_MODEL_EN"])        
-        self.model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-mpnet-base-v2")        
+        self.model = SentenceTransformer(os.environ["TOPOSOID_SENTENCEBERT_MODEL_EN"])                
     def getFeatureVector(self, sentence):
         return self.model.encode(sentence)
