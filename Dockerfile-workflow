@@ -1,4 +1,4 @@
-FROM toposoid/python-nlp-english:3.9
+FROM toposoid/python-nlp-english:0.4
 
 WORKDIR /app
 ARG TARGET_BRANCH
