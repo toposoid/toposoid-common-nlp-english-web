@@ -7,6 +7,9 @@ This Microservice provides an NLP function that handles English and outputs the 
 
 <img width="1105" src="https://user-images.githubusercontent.com/82787843/146533705-b1a09ad0-5faa-42db-8e02-fd3babf1c9e6.png">
 
+<img width="1105"  src="https://user-images.githubusercontent.com/82787843/212450070-08ee0785-c970-45f7-90ef-2a206cc137ad.png">
+
+
 ## Requirements
 * Docker version 20.10.x, or later
 * docker-compose version 1.22.x
@@ -23,15 +26,23 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 
 ## Usage
 ```bash
+#getSynonyms
 curl -X POST -H "Content-Type: application/json" -d '{
     "word": "execute"
 }
 ' http://localhost:9008/getSynonyms
+#getFeatureVector
+curl -X POST -H "Content-Type: application/json" -d '{
+    "sentence": "This is a test."
+}
+' http://localhost:9008/getFeatureVector
 ```
 
 # Note
 * This microservice uses 9008 as the default port.
-* Currently, only the function to get synonyms is open to the public in this API.
+* The Bert model used in this repository is below.　https://huggingface.co/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+* You can change the SentenceBERT model by changing the environment variable TOPOSOID_SENTENCEBERT_MODEL_EN.
+* The vector dimension of getFeatureVector's response defaults to 768.
 
 ## License
 toposoid/scala-common-nlp-english-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).

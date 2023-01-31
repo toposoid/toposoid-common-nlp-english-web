@@ -15,12 +15,13 @@
  '''
 
 from fastapi import FastAPI
-from model import NormalizedWord, SynonymList
+from model import NormalizedWord, SynonymList, SingleSentence, FeatureVector
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from WordNetUtils import WordNetUtils
 from Word2VecUtils import Word2VecUtils
+from SentenceBertUtils import SentenceBertUtils
 import os
 from logging import config
 config.fileConfig('logging.conf')
@@ -30,12 +31,13 @@ import traceback
 
 
 app = FastAPI(
-    title="scala-common-nlp-english-web",
-    version="0.1-SNAPSHOT"
+    title="toposoid-common-nlp-english-web",
+    version="0.4-SNAPSHOT"
 )
 
 wordNetUtils = WordNetUtils()
 word2VecUtils = Word2VecUtils()
+sentenceBertUtils = SentenceBertUtils()
 
 app.add_middleware(
     CORSMiddleware,
@@ -67,3 +69,11 @@ def getSynonyms(normalizedWord:NormalizedWord):
         LOG.error(traceback.format_exc())
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
 
+@app.post("/getFeatureVector")
+def getFeatureVector(input:SingleSentence):
+    try:        
+        vector = sentenceBertUtils.getFeatureVector(input.sentence)
+        return JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
+    except Exception as e:
+        LOG.error(traceback.format_exc())
+        return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})

@@ -9,11 +9,12 @@ networks:
 
 services:
   toposoid-common-nlp-english-web:
-    image: toposoid/toposoid-common-nlp-english-web:0.3
+    image: toposoid/toposoid-common-nlp-english-web:0.4
     environment:
       - SYNONYM_NOUN_SIMILARITY_THRESHHOLD_EN=0.52
       - SYNONYM_VERB_SIMILARITY_THRESHHOLD_EN=0.52
       - WORD2VEC_SIMILARITY_THRESHHOLD_EN=0.78
+      - TOPOSOID_SENTENCEBERT_MODEL_EN=sentence-transformers/paraphrase-multilingual-mpnet-base-v2
     networks:
       app_net:
         ipv4_address: 172.30.0.2

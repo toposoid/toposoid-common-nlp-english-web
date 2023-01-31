@@ -14,17 +14,13 @@
   limitations under the License.
  '''
 
-from pydantic import BaseModel
-from typing import Dict, List
+import os 
+import numpy as np
+from sentence_transformers import SentenceTransformer
 
-class NormalizedWord(BaseModel):
-    word:str
-
-class SynonymList(BaseModel):
-    synonyms:List[str]
-
-class SingleSentence(BaseModel):
-    sentence:str
-
-class FeatureVector(BaseModel):
-    vector:List[float]
+class SentenceBertUtils():
+    model = None
+    def __init__(self) :
+        self.model = SentenceTransformer(os.environ["TOPOSOID_SENTENCEBERT_MODEL_EN"])                
+    def getFeatureVector(self, sentence):
+        return self.model.encode(sentence)
