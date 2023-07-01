@@ -9,7 +9,7 @@ networks:
 
 services:
   toposoid-common-nlp-english-web:
-    image: toposoid-common-nlp-english-web:0.4
+    image: toposoid-common-nlp-english-web:0.5-SNAPSHOT
     tty: true
     environment:
       - SYNONYM_NOUN_SIMILARITY_THRESHHOLD_EN=0.52
