@@ -1,4 +1,4 @@
-FROM toposoid/python-nlp-english:3.9
+FROM toposoid/python-nlp-english:0.5-SNAPSHOT
 
 WORKDIR /app
 ARG TARGET_BRANCH
@@ -11,8 +11,9 @@ RUN apt-get update \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH} \
 && pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt \
-&& mkdir -p sentence-transformers \
-&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2 ./sentence-transformers/
+&& mkdir -p models \
+&& mkdir -p models/sentence-transformers_paraphrase-multilingual-mpnet-base-v2 \
+&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2/* ./models/sentence-transformers_paraphrase-multilingual-mpnet-base-v2/
 
 
 COPY ./docker-entrypoint.sh /app/
