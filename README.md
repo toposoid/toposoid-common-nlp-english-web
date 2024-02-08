@@ -5,44 +5,43 @@ This Microservice provides an NLP function that handles English and outputs the 
 
 [![Test And Build](https://github.com/toposoid/scala-common-nlp-english-web/actions/workflows/action.yml/badge.svg)](https://github.com/toposoid/scala-common-nlp-english-web/actions/workflows/action.yml)
 
-<img width="1105" src="https://user-images.githubusercontent.com/82787843/146533705-b1a09ad0-5faa-42db-8e02-fd3babf1c9e6.png">
-
-<img width="1105"  src="https://user-images.githubusercontent.com/82787843/212450070-08ee0785-c970-45f7-90ef-2a206cc137ad.png">
+<img width="1074" src="https://github.com/toposoid/toposoid-common-nlp-english-web/assets/82787843/4493f392-f189-4ce8-9603-a849a666f412">
+<img width="1068" src="https://github.com/toposoid/toposoid-common-nlp-english-web/assets/82787843/c11af045-d16c-47a3-be62-02ffd35dc51f">
 
 
 ## Requirements
 * Docker version 20.10.x, or later
 * docker-compose version 1.22.x
 
-### Memory requirements
-* Required: at least 6GB of RAM
-* Required: 10G or higher of HDD
+### Memory requirements For Standalone
+* Required: at least 4GB of RAM
+* Required: at least 8.29GB of HDD(Docker Image Size)
 
-## Setup
+## Setup For Standalone
 ```bssh
 docker-compose up -d
 ```
-It takes more than 20 minutes to pull the Docker image for the first time.
+The first startup takes a long time until docker pull finishes.
 
 ## Usage
 ```bash
 #getSynonyms
 curl -X POST -H "Content-Type: application/json" -d '{
     "word": "execute"
-}
-' http://localhost:9008/getSynonyms
+}' http://localhost:9008/getSynonyms
 #getFeatureVector
 curl -X POST -H "Content-Type: application/json" -d '{
     "sentence": "This is a test."
-}
-' http://localhost:9008/getFeatureVector
+}' http://localhost:9008/getFeatureVector
 ```
+* ref. http://localhost:9008/docs
 
 # Note
 * This microservice uses 9008 as the default port.
-* The Bert model used in this repository is below.　https://huggingface.co/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+* The Bert model used in this repository is below.　
+https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+https://huggingface.co/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
 * You can change the SentenceBERT model by changing the environment variable TOPOSOID_SENTENCEBERT_MODEL_EN.
-* The vector dimension of getFeatureVector's response defaults to 768.
 
 ## License
 toposoid/scala-common-nlp-english-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
