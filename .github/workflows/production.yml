@@ -1,13 +1,15 @@
 name: Test And Build
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - feature
+      - main
   workflow_dispatch:
 env:
   PJ_ACTOR: toposoid
   PJ_REPO: toposoid-common-nlp-english-web
-  PJ_BRANCH: feature
+  PJ_BRANCH: main
   PJ_VERSION: 0.5
 jobs:
   unit-test_toposoid-common-nlp-english-web:
@@ -28,12 +30,12 @@ jobs:
             docker images 
             docker system prune -f
             docker volume prune -f 
-            sed -i -e "s/###SPEC_LEVEL###/-lowspec/g" Dockerfile-workflow
-            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
+            sed -i -e "s/###SPEC_LEVEL###//g" Dockerfile-workflow
+            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
             docker-compose -f docker-compose-workflow.yml up -d
             docker-compose -f docker-compose-workflow.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && pytest"
             docker rm --force $(docker ps -a -q) > /dev/null 2>&1 && :
-            docker rmi --force ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}            
+            docker rmi --force ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
             docker system prune -f
             docker volume prune -f 
       - name: Docker meta
@@ -54,16 +56,16 @@ jobs:
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
+            SPEC_LEVEL=""
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2
-            VECTOR_MODEL=lg
       - name: Build And Push Docker Image For Test
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile-lowspec
+          file: Dockerfile
           push: true
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
+            SPEC_LEVEL=-lowspec
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2
-            VECTOR_MODEL=md
