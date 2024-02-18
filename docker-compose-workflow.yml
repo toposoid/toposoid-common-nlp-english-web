@@ -1,23 +1,14 @@
 version: '3'
-networks:
-  app_net:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.30.0.0/24
-
 services:
   toposoid-common-nlp-english-web:
-    image: toposoid-common-nlp-english-web:0.4
+    image: toposoid-common-nlp-english-web:0.5
     tty: true
     environment:
-      - SYNONYM_NOUN_SIMILARITY_THRESHHOLD_EN=0.52
-      - SYNONYM_VERB_SIMILARITY_THRESHHOLD_EN=0.52
-      - WORD2VEC_SIMILARITY_THRESHHOLD_EN=0.78
-      - TOPOSOID_SENTENCEBERT_MODEL_EN=sentence-transformers/paraphrase-multilingual-mpnet-base-v2
-    networks:
-      app_net:
-        ipv4_address: 172.30.0.2
+      - TOPOSOID_SYNONYM_NOUN_SIMILARITY_THRESHHOLD_EN=0.52
+      - TOPOSOID_SYNONYM_VERB_SIMILARITY_THRESHHOLD_EN=0.52
+      - TOPOSOID_WORD2VEC_SIMILARITY_THRESHHOLD_EN=0.78
+      - TOPOSOID_SENTENCEBERT_MODEL_EN=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+      - TOPOSOID_SPACY_MODEL_EN=en_core_web_md
+      - SENTENCE_TRANSFORMERS_HOME=./models
     ports:
       - 9008:9008

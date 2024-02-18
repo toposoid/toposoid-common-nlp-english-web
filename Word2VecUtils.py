@@ -22,7 +22,8 @@ import numpy as np
 class Word2VecUtils():
     nlp = None
     def __init__(self) :
-        self.nlp = spacy.load('en_core_web_lg')
+        self.nlp = spacy.load(os.environ["TOPOSOID_SPACY_MODEL_EN"])
+        #self.nlp = spacy.load('en_core_web_lg')
     
     #This function calculates the similarity between two words given by a parameter in Word2Vec
     def calcSimilarityByWord2Vec(self, word, synonym):
@@ -30,7 +31,7 @@ class Word2VecUtils():
     
     #This function gets synonyms with high similarity from Word2Vec.
     def getSimilarWords(self, word):
-        thresholdW2V = float(os.environ["WORD2VEC_SIMILARITY_THRESHHOLD_EN"])        
+        thresholdW2V = float(os.environ["TOPOSOID_WORD2VEC_SIMILARITY_THRESHHOLD_EN"])        
         similarWords = set()
         words, scores = self.mostSimilar(word)
         for (w, s) in zip(words, scores):

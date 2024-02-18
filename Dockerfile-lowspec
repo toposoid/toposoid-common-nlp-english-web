@@ -1,4 +1,4 @@
-FROM toposoid/python-nlp-english:0.5-SNAPSHOT
+FROM toposoid/python-nlp-english:0.5-SNAPSHOT-lowspec
 
 ARG TARGET_BRANCH
 ARG SENTENCE_TRANSFORMER_MODEL
