@@ -24,7 +24,7 @@ from fastapi.encoders import jsonable_encoder
 class TestVoldAPI(object):
 
     client = TestClient(app)
-    transversalState = str(jsonable_encoder(TransversalState(username="guest")))
+    transversalState = str(jsonable_encoder(TransversalState(userId="test-user", username="guest", roleId=0, csrfToken = "")))
     def test_EmptyWord(self):    
         response = self.client.post("/getSynonyms",
                             headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": self.transversalState},

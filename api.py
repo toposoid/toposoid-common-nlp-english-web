@@ -70,10 +70,10 @@ def getSynonyms(normalizedWord:NormalizedWord, X_TOPOSOID_TRANSVERSAL_STATE: Opt
                 if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                     synonyms.append(synonym)    
         response = JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
-        LOG.info(formatMessageForLogger("Getting synonym completed.", transversalState.username))
+        LOG.info(formatMessageForLogger("Getting synonym completed.", transversalState.userId))
         return response
     except Exception as e:
-        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.username))
+        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.userId))
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
 
 @app.post("/getFeatureVector")
@@ -82,8 +82,8 @@ def getFeatureVector(input:SingleSentence, X_TOPOSOID_TRANSVERSAL_STATE: Optiona
     try:        
         vector = sentenceBertUtils.getFeatureVector(input.sentence)
         response = JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
-        LOG.info(formatMessageForLogger("Getting feature vector completed.", transversalState.username))
+        LOG.info(formatMessageForLogger("Getting feature vector completed.", transversalState.userId))
         return response
     except Exception as e:
-        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.username))
+        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.userId))
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
