@@ -41,11 +41,11 @@ jobs:
         uses: crazy-max/ghaction-docker-meta@v3
         with:
           images: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
-      - name: Login to GHCR
+      - name: Login to CR
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.GHCR_USER }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          username: toposoid
+          password: ${{ secrets.CR_TOKEN }}
       - name: Build And Push Docker Image
         uses: docker/build-push-action@v3
         with:
@@ -55,15 +55,12 @@ jobs:
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2
-            VECTOR_MODEL=lg
       - name: Build And Push Docker Image For Test
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile-lowspec
           push: true
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2
-            VECTOR_MODEL=md

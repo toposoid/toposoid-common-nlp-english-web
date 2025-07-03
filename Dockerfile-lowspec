@@ -1,4 +1,4 @@
-FROM toposoid/python-nlp-english:0.5-SNAPSHOT-lowspec
+FROM toposoid/python-nlp-english:0.6-lowspec
 
 ARG TARGET_BRANCH
 ARG SENTENCE_TRANSFORMER_MODEL
@@ -12,6 +12,7 @@ RUN apt-get update \
 && cd toposoid-common-nlp-english-web \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH} \
+&& sed -i s/__##GIT_BRANCH##__/${TARGET_BRANCH}/g requirements.txt \
 && pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt \
 && mkdir -p models \
 && mkdir -p models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL} \
