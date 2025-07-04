@@ -15,7 +15,7 @@ This Microservice provides an NLP function that handles English and outputs the 
 
 ### Memory requirements For Standalone
 * Required: at least 4GB of RAM
-* Required: at least 8.29GB of HDD(Docker Image Size)
+* Required: at least 11.8GB of HDD(Docker Image Size)
 
 ## Setup For Standalone
 ```bssh
