@@ -58,10 +58,12 @@ def getSynonyms(normalizedWord:NormalizedWord, X_TOPOSOID_TRANSVERSAL_STATE: Opt
         if not normalizedWord.word.strip() == "":
             nounSynonums, verbSynonyms = wordNetUtils.getSynonyms(normalizedWord.word)
             for synonym in nounSynonums:
+                if synonym == normalizedWord.word.strip(): continue
                 if synonym in synonyms: continue
                 if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdNoun:
                     synonyms.append(synonym) 
             for synonym in verbSynonyms:
+                if synonym == normalizedWord.word.strip(): continue
                 if synonym in synonyms: continue
                 if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                     synonyms.append(synonym)    
