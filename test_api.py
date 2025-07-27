@@ -1,33 +1,34 @@
 '''
-  Copyright 2021 Linked Ideal LLC.[https://linked-ideal.com/]
+  Copyright (C) 2025  Linked Ideal LLC.[https://linked-ideal.com/]
  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, version 3.
  
-      http://www.apache.org/licenses/LICENSE-2.0
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
- '''
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 from fastapi.testclient import TestClient
 from api import app
-from model import NormalizedWord, SynonymList, FeatureVector
+from ToposoidCommon.model import TransversalState, SynonymList, FeatureVector
 import pytest
 import os
-
+from fastapi.encoders import jsonable_encoder
 #This is a unit test module
 
 class TestVoldAPI(object):
 
     client = TestClient(app)
-
+    transversalState = str(jsonable_encoder(TransversalState(userId="test-user", username="guest", roleId=0, csrfToken = "")))
     def test_EmptyWord(self):    
         response = self.client.post("/getSynonyms",
-                            headers={"Content-Type": "application/json"},
+                            headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": self.transversalState},
                             json={"word": ""})    
         assert response.status_code == 200
         synonymList = SynonymList.parse_obj(response.json())
@@ -35,7 +36,7 @@ class TestVoldAPI(object):
 
     def test_SimpleVerb(self):    
         response = self.client.post("/getSynonyms",
-                            headers={"Content-Type": "application/json"},
+                            headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": self.transversalState},
                             json={"word": "execute"})    
         assert response.status_code == 200
         synonymList = SynonymList.parse_obj(response.json())
@@ -43,7 +44,7 @@ class TestVoldAPI(object):
 
     def test_SimpleNoun(self):    
         response = self.client.post("/getSynonyms",
-                            headers={"Content-Type": "application/json"},
+                            headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": self.transversalState},
                             json={"word": "agreement"})    
         assert response.status_code == 200
         synonymList = SynonymList.parse_obj(response.json())
@@ -51,7 +52,7 @@ class TestVoldAPI(object):
 
     def test_VocabularyNotFoundInWordNet(self):    
         response = self.client.post("/getSynonyms",
-                            headers={"Content-Type": "application/json"},
+                            headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": self.transversalState},
                             json={"word": "research"})    
         assert response.status_code == 200
         synonymList = SynonymList.parse_obj(response.json())
@@ -59,7 +60,7 @@ class TestVoldAPI(object):
 
     def test_VocabularyNotFoundInWord2Vec(self):    
         response = self.client.post("/getSynonyms",
-                            headers={"Content-Type": "application/json"},
+                            headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": self.transversalState},
                             json={"word": "aslkfjg"})    
         assert response.status_code == 200
         synonymList = SynonymList.parse_obj(response.json())
@@ -68,7 +69,7 @@ class TestVoldAPI(object):
     def test_GetFeatureVector(self):
         import math
         response = self.client.post("/getFeatureVector",
-                            headers={"Content-Type": "application/json"},
+                            headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": self.transversalState},
                             json={"sentence": "This is a test."})    
         assert response.status_code == 200
         featureVector = FeatureVector.parse_obj(response.json())
