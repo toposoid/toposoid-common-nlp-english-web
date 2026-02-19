@@ -29,9 +29,9 @@ jobs:
             docker system prune -f
             docker volume prune -f
             sed -i -e "s/###SPEC_LEVEL###/-lowspec/g" Dockerfile-workflow
-            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
+            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg BASE_IMAGE_LABEL=${{ env.PJ_VERSION }}-lowspec --build-arg PIPELINES_MODEL=en_core_web_md --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
             docker compose -f docker-compose-workflow.yml up -d
-            docker compose -f docker-compose-workflow.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && pytest"
+            docker compose -f docker-compose-workflow.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && source /root/.local/bin/env && uv run pytest"
             docker rm --force $(docker ps -a -q) > /dev/null 2>&1 && :
             docker rmi --force ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
             docker system prune -f
@@ -54,14 +54,18 @@ jobs:
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
+            BASE_IMAGE_LABEL=${{ env.PJ_VERSION }}
+            PIPELINES_MODEL=en_core_web_lg
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2
       - name: Build And Push Docker Image For Test
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile-lowspec
+          file: Dockerfile
           push: true
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
+            BASE_IMAGE_LABEL=${{ env.PJ_VERSION }}-lowspec
+            PIPELINES_MODEL=en_core_web_md
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2

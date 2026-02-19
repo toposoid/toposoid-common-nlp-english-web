@@ -32,7 +32,7 @@ import traceback
 
 app = FastAPI(
     title="toposoid-common-nlp-english-web",
-    version="0.6-SNAPSHOT"
+    version="0.7-SNAPSHOT"
 )
 
 wordNetUtils = WordNetUtils()
