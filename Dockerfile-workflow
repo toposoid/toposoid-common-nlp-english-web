@@ -22,6 +22,7 @@ RUN apt-get update \
 && mkdir -p models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL} \
 && mv -f /tmp/${SENTENCE_TRANSFORMER_MODEL}/* ./models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL}/ \
 && rm -Rf /tmp/* \
+&& sed s/__##GIT_BRANCH##__/${TARGET_BRANCH}/g pyproject.toml.template > pyproject.toml \
 && uv sync \
 && uv add git+https://github.com/toposoid/toposoid-python-lib.git@${TARGET_BRANCH}#egg=ToposoidCommon \
 && uv run installWordNet.py \
