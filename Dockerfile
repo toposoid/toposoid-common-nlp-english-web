@@ -9,7 +9,9 @@ WORKDIR /app
 ENV DEPLOYMENT=local
 
 RUN apt-get update \
-&& apt-get -y install git \
+&& apt-get -y install git unzip \
+&& curl -LsSf https://astral.sh/uv/install.sh | sh \
+&& source ${HOME}/.local/bin/env \
 && git clone https://github.com/toposoid/toposoid-common-nlp-english-web.git \
 && cd toposoid-common-nlp-english-web \
 && git fetch origin ${TARGET_BRANCH} \
