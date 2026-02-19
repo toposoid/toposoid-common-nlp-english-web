@@ -132,3 +132,8 @@ dmypy.json
 logs/*
 !.gitkeep
 models/
+
+.devcontainer
+docker-compose-dev.yml
+pyproject.toml
+uv.lock

@@ -1,7 +1,9 @@
-FROM toposoid/python-nlp-english:0.6
+ARG BASE_IMAGE_LABEL
+FROM toposoid/python-nlp-english:${BASE_IMAGE_LABEL}
 
 ARG TARGET_BRANCH
 ARG SENTENCE_TRANSFORMER_MODEL
+ARG PIPELINES_MODEL
 
 WORKDIR /app
 ENV DEPLOYMENT=local
@@ -12,12 +14,19 @@ RUN apt-get update \
 && cd toposoid-common-nlp-english-web \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH} \
-&& sed -i s/__##GIT_BRANCH##__/${TARGET_BRANCH}/g requirements.txt \
-&& pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt \
 && mkdir -p models \
 && mkdir -p models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL} \
 && mv -f /tmp/${SENTENCE_TRANSFORMER_MODEL}/* ./models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL}/ \
-&& rm -Rf /tmp/*
+&& rm -Rf /tmp/* \
+&& sed s/__##GIT_BRANCH##__/${TARGET_BRANCH}/g pyproject.toml.template > pyproject.toml \
+&& uv sync \
+&& uv add git+https://github.com/toposoid/toposoid-python-lib.git@${TARGET_BRANCH}#egg=ToposoidCommon \
+&& uv run installWordNet.py \
+&& uv run -- spacy download ${PIPELINES_MODEL}
+
+#&& sed -i s/__##GIT_BRANCH##__/${TARGET_BRANCH}/g requirements.txt \
+#&& pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt \
+
 
 COPY ./docker-entrypoint.sh /app/
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
