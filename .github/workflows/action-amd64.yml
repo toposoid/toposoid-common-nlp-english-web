@@ -1,0 +1,70 @@
+name: Test And Build
+on:
+  workflow_call:
+env:
+  PJ_ACTOR: toposoid
+  PJ_REPO: toposoid-common-nlp-english-web
+  PJ_BRANCH: feature
+  PJ_VERSION: 0.7-SNAPSHOT
+jobs:
+  unit-test_toposoid-common-nlp-english-web-amd64:
+    runs-on: self-hosted
+    steps:
+      - name: Clone ${{ env.PJ_REPO }}
+        uses: actions/checkout@v4
+        with:
+            repository: ${{ env.PJ_ACTOR }}/${{ env.PJ_REPO }}
+      - name: Execute tests
+        run: |
+            cd ${GITHUB_WORKSPACE} && cd ../
+            cd ./${{ env.PJ_REPO }}
+            docker rm --force $(docker ps -a -q) > /dev/null 2>&1 && :
+            docker rmi --force ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} > /dev/null 2>&1 && :
+            docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} > /dev/null 2>&1 && :
+            docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec > /dev/null 2>&1 && :
+            docker images
+            docker system prune -f
+            docker volume prune -f
+            sed -i -e "s/###SPEC_LEVEL###/-lowspec/g" Dockerfile-workflow
+            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg BASE_IMAGE_LABEL=0.7-lowspec --build-arg PIPELINES_MODEL=en_core_web_md --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
+            docker compose -f docker-compose-workflow.yml up -d
+            docker compose -f docker-compose-workflow.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && source /root/.local/bin/env && uv run pytest"
+            docker rm --force $(docker ps -a -q) > /dev/null 2>&1 && :
+            docker rmi --force ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
+            docker system prune -f
+            docker volume prune -f
+      - name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v5
+        with:
+          images: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
+      - name: Login to CR
+        uses: docker/login-action@v3
+        with:
+          username: toposoid
+          password: ${{ secrets.CR_TOKEN }}
+      - name: Build And Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          provenance: false
+          tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-amd64
+          build-args: |
+            TARGET_BRANCH=${{ env.PJ_BRANCH }}
+            BASE_IMAGE_LABEL=0.7
+            PIPELINES_MODEL=en_core_web_lg
+            SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2
+      - name: Build And Push Docker Image For Test
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          provenance: false
+          tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec-amd64
+          build-args: |
+            TARGET_BRANCH=${{ env.PJ_BRANCH }}
+            BASE_IMAGE_LABEL=0.7-lowspec
+            PIPELINES_MODEL=en_core_web_md
+            SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2
